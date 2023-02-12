@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+
+    """This script must be executed from the raw_data directory
+    """
+
+# Import libraries
 import pandas as pd
 import numpy as np
 import os
