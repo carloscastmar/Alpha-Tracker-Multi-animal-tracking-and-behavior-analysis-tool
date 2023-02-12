@@ -1,0 +1,5 @@
+images sorted?
+rightdown y > topleft y?
+empty values?
+one json for all the csv?
+join_csv?
