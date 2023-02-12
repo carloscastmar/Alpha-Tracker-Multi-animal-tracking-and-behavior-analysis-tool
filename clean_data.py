@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
 
-    """This script must be executed from the raw_data directory
-    """
+"""This script must be executed from the raw_data directory"""
 
 # Import libraries
 import pandas as pd
 import os
 import sys
-
 
 # Create a path that works for all OS
 data_path = os.path.join(os.getcwd(), str(sys.argv[1]))
