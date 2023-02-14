@@ -1,35 +1,48 @@
 #!/usr/bin/env python3
 
-"""This script must be executed from the raw_data directory"""
+"""This script must be executed from the raw_data directory. Type:
+for FILE in *; do python3 ../clean_data.py $FILE; done"""
 
-# Import libraries
 import pandas as pd
 import os
 import sys
 
-# Create a path that works for all OS
-data_path = os.path.join(os.getcwd(), str(sys.argv[1]))
+# Get the file name from command line argument
+file_name = sys.argv[1]
 
-# Load the data
+# Create the path to the file
+data_path = os.path.join(os.getcwd(), file_name)
+
+# Load the data into a Pandas DataFrame
 df = pd.read_csv(data_path)
 
-# Set the file name as the index and rename its header
-df = df.rename(columns={"Unnamed: 1": "csv_index", "Unnamed: 2": "file_name"})
-df = df.set_index(["csv_index","file_name"])
+# Rename the columns
+df = df.rename(columns={
+    "Unnamed: 1": "csv_index", 
+    "Unnamed: 2": "file_name"
+})
 
-# Delete the first two columns which do not provide useful info
+# Set the csv index and file name as the DataFrame index
+df = df.set_index(["csv_index", "file_name"])
+
+# Drop the first column as it doesn't contain useful information
 df = df.iloc[:, 1:]
 
-# Create a list with the first three rows concatenated to modify the headers
-columns = []
-for i in range(df.shape[1]):
-    columns.append("_".join(list(df.iloc[:3, i])))
+# Get the first three rows to modify the headers
+headers = df.iloc[:3, :].copy()
 
-# Delete the first three rows
+# Concatenate the first three rows to form the new headers
+new_headers = []
+for i in range(headers.shape[1]):
+    new_header = "_".join(headers.iloc[:, i].tolist())
+    new_headers.append(new_header)
+
+# Drop the first three rows from the DataFrame
 df = df.iloc[3:, :]
 
-# Rename the columns
-df.columns = columns
+# Rename the columns with the new headers
+df.columns = new_headers
 
-# Export the dataframe to csv
-df.to_csv(os.path.join(os.pardir, "cleaned_data", "cleaned_" + str(sys.argv[1])))
+# Save the cleaned data to a new file
+cleaned_data_path = os.path.join(os.pardir, "cleaned_data", f"cleaned_{file_name}")
+df.to_csv(cleaned_data_path)
